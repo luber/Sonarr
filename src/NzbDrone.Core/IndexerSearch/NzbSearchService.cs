@@ -173,7 +173,7 @@ namespace NzbDrone.Core.IndexerSearch
                 searchSpec.SeasonNumber = episode.SeasonNumber;
             }
 
-            return Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
+			return Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
         }
 
         private List<DownloadDecision> SearchDaily(Series series, Episode episode, bool userInvokedSearch)
@@ -213,7 +213,7 @@ namespace NzbDrone.Core.IndexerSearch
                                                     .SelectMany(e => searchSpec.QueryTitles.Select(title => title + " " + SearchCriteriaBase.GetQueryTitle(e.Title)))
                                                     .ToArray();
 
-            return Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
+			return Dispatch(indexer => indexer.Fetch(searchSpec), searchSpec);
         }
 
         private List<DownloadDecision> SearchAnimeSeason(Series series, List<Episode> episodes, bool userInvokedSearch)

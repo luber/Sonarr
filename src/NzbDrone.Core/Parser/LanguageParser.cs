@@ -103,7 +103,7 @@ namespace NzbDrone.Core.Parser
             if (match.Groups["hungarian"].Success)
                 return Language.Hungarian;
 
-            return Language.English;
+	    return Language.Unknown;
         }
 
         public static Language ParseSubtitleLanguage(string fileName)

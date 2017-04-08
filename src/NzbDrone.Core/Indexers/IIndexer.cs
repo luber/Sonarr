@@ -10,8 +10,11 @@ namespace NzbDrone.Core.Indexers
         bool SupportsRss { get; }
         bool SupportsSearch { get; }
         DownloadProtocol Protocol { get; }
-        
-        IList<ReleaseInfo> FetchRecent();
+
+		bool UseCustomSearchPattern { get; set; }
+		string CustomSearchPattern { get; set; }
+
+		IList<ReleaseInfo> FetchRecent();
         IList<ReleaseInfo> Fetch(SeasonSearchCriteria searchCriteria);
         IList<ReleaseInfo> Fetch(SingleEpisodeSearchCriteria searchCriteria);
         IList<ReleaseInfo> Fetch(DailyEpisodeSearchCriteria searchCriteria);

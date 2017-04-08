@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NLog;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Common.Instrumentation.Extensions;
@@ -61,7 +62,30 @@ namespace NzbDrone.Core.DecisionEngine
 
                 try
                 {
-                    var parsedEpisodeInfo = Parser.Parser.ParseTitle(report.Title);
+					ParsedEpisodeInfo parsedEpisodeInfo = null;
+					// TODO: Parser factory should be used to create Indexer specific parsers or default if not found
+					// but for now :) ...
+					if (report.DownloadProtocol == Indexers.DownloadProtocol.Torrent) {
+						var indexer = report.Indexer;
+						var regexList = new List<Regex>();
+						if (string.Equals (indexer, "Torrents.Md", StringComparison.CurrentCultureIgnoreCase)) {
+							regexList
+								.Add(new Regex(@"^(?<title>.+)\s\/\s+\[(?<relgrp>\w+)\]\s+(\[(?<quality>480|720|1080|2160)\]\s*)?\[Season\s(?<season>\d+)\s?\/\s?Episode\s(?<episode>\d+)\]\s+\[(?<year>\d+)\s?\/\s?(?<webdl>\S+)\]\s+",
+						  					RegexOptions.IgnoreCase | RegexOptions.Compiled)
+								    );
+						} else if (string.Equals (indexer, "RuTracker", StringComparison.CurrentCultureIgnoreCase)) {
+							regexList
+								.Add(new Regex(@"^(.*?)(?<title>[aA-zZ\s\d]+)(?=\s\/\sСезон:)\s\/\s(.*?(?<season>\d+))(?=\s\/)\s\/\s(.*?(?<episode>\d+)-(?<episode>\d+).*)(?=\[)\[(?<year>\d+)(,.*)(?<webdl>(WEB|HDTV).*?)\].*?\((?<relgrp>.*?)\)\s*?",
+						  					RegexOptions.IgnoreCase | RegexOptions.Compiled)
+								     );
+						}
+
+						parsedEpisodeInfo = Parser.Parser.CustomParseTitle(report.Title, Language.Russian, regexList.ToArray());
+					}
+
+					if (parsedEpisodeInfo == null) {
+						parsedEpisodeInfo = Parser.Parser.ParseTitle (report.Title);
+					}
 
                     if (parsedEpisodeInfo == null || parsedEpisodeInfo.IsPossibleSpecialEpisode)
                     {

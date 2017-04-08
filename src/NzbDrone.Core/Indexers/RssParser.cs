@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
@@ -75,12 +76,13 @@ namespace NzbDrone.Core.Indexers
 
         protected virtual XDocument LoadXmlDocument(IndexerResponse indexerResponse)
         {
-            try
-            {
-                var content = XmlCleaner.ReplaceEntities(indexerResponse.Content);
-                content = XmlCleaner.ReplaceUnicode(content);
+            try{
+		var content = indexerResponse.Content;
+		//var content = XmlCleaner.ReplaceEntities(indexerResponse.Content);
+                //content = XmlCleaner.ReplaceUnicode(content);
 
-                using (var xmlTextReader = XmlReader.Create(new StringReader(content), new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore, IgnoreComments = true }))
+                //using (var xmlTextReader = XmlReader.Create(new StringReader(content), new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore, IgnoreComments = true }))
+                using (var xmlTextReader = XmlReader.Create(new StringReader(Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(content))), new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore, IgnoreComments = true }))
                 {
                     return XDocument.Load(xmlTextReader);
                 }

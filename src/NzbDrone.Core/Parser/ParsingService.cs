@@ -228,8 +228,10 @@ namespace NzbDrone.Core.Parser
 
             if (episode != null)
             {
-                // create parsed info from tv episode
-                var info = new ParsedEpisodeInfo();
+		var parsedLang = LanguageParser.ParseLanguage(title);
+
+		// create parsed info from tv episode
+		var info = new ParsedEpisodeInfo();
                 info.SeriesTitle = series.Title;
                 info.SeriesTitleInfo = new SeriesTitleInfo();
                 info.SeriesTitleInfo.Title = info.SeriesTitle;
@@ -238,7 +240,7 @@ namespace NzbDrone.Core.Parser
                 info.FullSeason = false;
                 info.Quality = QualityParser.ParseQuality(title);
                 info.ReleaseGroup = Parser.ParseReleaseGroup(title);
-                info.Language = LanguageParser.ParseLanguage(title);
+		info.Language = parsedLang == Language.Unknown? Language.English : parsedLang;
                 info.Special = true;
 
                 _logger.Debug("Found special episode {0} for title '{1}'", info, title);

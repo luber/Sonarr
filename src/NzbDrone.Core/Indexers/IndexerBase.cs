@@ -61,7 +61,10 @@ namespace NzbDrone.Core.Indexers
 
         protected TSettings Settings => (TSettings)Definition.Settings;
 
-        public abstract IList<ReleaseInfo> FetchRecent();
+		public virtual bool UseCustomSearchPattern { get; set; }
+		public virtual string CustomSearchPattern { get; set; }
+
+		public abstract IList<ReleaseInfo> FetchRecent();
         public abstract IList<ReleaseInfo> Fetch(SeasonSearchCriteria searchCriteria);
         public abstract IList<ReleaseInfo> Fetch(SingleEpisodeSearchCriteria searchCriteria);
         public abstract IList<ReleaseInfo> Fetch(DailyEpisodeSearchCriteria searchCriteria);
